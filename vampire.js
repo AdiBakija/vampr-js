@@ -50,17 +50,46 @@ class Vampire {
 
   // Returns the vampire object with that name, or null if no vampire exists with that name
   vampireWithName(name) {
-    
+
+    if(this.name == name) {
+      return this;
+    } else if (this.offspring.length != 0) {
+      let result = null;
+      for(let i = 0; result === null && i < this.offspring.length; i++){
+        result = this.offspring[i].vampireWithName(name);
+      }
+      return result;
+    }
+    return null;
   }
 
   // Returns the total number of vampires that exist
   get totalDescendents() {
-    
+    let totalVampires = 0; // 1
+
+    for (const vampire of this.offspring) {
+      totalVampires += vampire.totalDescendents;
+      totalVampires++;
+    }
+
+    return totalVampires;
   }
 
   // Returns an array of all the vampires that were converted after 1980
   get allMillennialVampires() {
-    
+    let millenials = []; // 1
+
+    if (this.yearConverted > 1980) {
+      millenials.push(this); // 2
+    }
+
+    for (const childVampire of this.offspring) {
+      const vampiresThatAreMillenials = childVampire.allMillennialVampires; // 3
+      millenials = millenials.concat(vampiresThatAreMillenials);
+    }
+
+    return millenials;
+
   }
 
   /** Stretch **/
@@ -74,6 +103,24 @@ class Vampire {
 
   }
 }
+
+const original = new Vampire("Original", 1350);
+  const bart    = new Vampire("Bart", 1500);
+  const ansel   = new Vampire("Ansel", 1550);
+    const elgort = new Vampire("Elgort", 1985);
+      const andrew = new Vampire("Andrew", 1995);
+    const sarah = new Vampire("Sarah", 1987);
+  const dracula = new Vampire("Dracula", 1450);
+    const alisa = new Vampire("Alisa", 1996);
+original.addOffspring(ansel);
+original.addOffspring(bart);
+original.addOffspring(dracula);
+ansel.addOffspring(elgort);
+ansel.addOffspring(sarah);
+elgort.addOffspring(andrew);
+dracula.addOffspring(alisa);
+
+console.log(original.allMillennialVampires);
 
 module.exports = Vampire;
 
